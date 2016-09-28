@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+import sys
+from os.path import dirname, join
+
+import yaml
+from jinja2 import Template
+
+built_in_derived = '[{name}]({{< relref "blueprints/built-in-types.md" >}})'
+
+
+def main(plugin_yaml):
+    with open(plugin_yaml) as f:
+        plugin = yaml.load(f)
+
+    with open(join(dirname(plugin_yaml), 'descriptions.yaml')) as f:
+        descriptions = yaml.load(f)
+
+    with open('types_template.md') as t:
+        template = Template(
+                t.read(),
+                )
+
+    for type, details in plugin['node_types'].items():
+        details['short_name'] = type.split('.')[-1]
+
+        details.update(descriptions['node_types'][details['short_name']])
+
+        if 'cloudify.nodes' in details['derived_from']:
+            details['derived_from_text'] = built_in_derived.format(
+                    name=details['derived_from'])
+        else:
+            details['derived_from_text'] = details['derived_from']
+
+    rendered = template.render(
+            types=plugin['node_types'],
+            relationships=plugin['relationships'],
+            )
+
+    print(rendered)
+
+
+if __name__ == "__main__":
+    main(sys.argv[1])
