@@ -107,23 +107,6 @@ Most node types will write a snapshot of the `resource` information from GCP whe
 {{ content['example']['text'] }}
 {% endif %}
 
-
-**Mapped Operations:**
-{%- if content.get('interfaces') %}
-{%- for class, rels in content['interfaces'].items() %}
-  * `{{ class }}`
-{%- for rel, details in rels.items() %}
-      * `{{ rel }}`
-        * inputs:
-{%- for input_name, input_details in details.get('inputs', {}).items() %}
-          * `{{ input_name }}`
-              {{ input_details }}
-{%- endfor %}
-{%- endfor %}
-{% endfor %}
-
-
-{% endif %}
 {% endfor %}
 
 
