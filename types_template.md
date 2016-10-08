@@ -63,11 +63,6 @@ Many cloud resources also support the `use_external_resource` and property:
   * `resource_id` The ID of an existing resource when the `use_external_resource` property is set to `true` (see the [using existing resources section](#using-existing-resources)). Defaults to `''` (empty string).
 
 
-**Attributes:**
-
-See the [Runtime Properties section](#runtime-properties).
-
-
 
 ## Runtime Properties
 
@@ -85,14 +80,17 @@ Most node types will write a snapshot of the `resource` information from GCP whe
 
 
 **Properties:**
-{%- for property, details in content['properties'].items() %}
+
+{% for property, details in content['properties'].items() %}
   * `{{ property }}`
     {{ details.get('description', '')|indent }}
-{%- if details.get('required', True) %}
-        **required**
+{%- if details['type'] is defined %}
+        **type:** {{ details.type }}
 {%- endif %}
-{%- if details['default'] %}
+{%- if details['default'] is defined %}
         **default:** {{details.default}}
+{%- elif details.get('required', True) != None %}
+        **required** {{ details.get('required') }}
 {%- endif %}
 
 {%- endfor %}
@@ -123,14 +121,9 @@ Most node types will write a snapshot of the `resource` information from GCP whe
 {%- endfor %}
 {%- endfor %}
 {% endfor %}
+
+
 {% endif %}
-
-
-**Attributes:**
-
-See the [common Runtime Properties section](#runtime-properties).
-
-
 {% endfor %}
 
 
