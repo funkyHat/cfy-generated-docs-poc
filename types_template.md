@@ -81,7 +81,7 @@ Most node types will write a snapshot of the `resource` information from GCP whe
 
 **Properties:**
 
-{% for property, details in content['properties'].items() %}
+{% if content['properties'] %}{% for property, details in content['properties'].items() %}
   * `{{ property }}`
     {{ details.get('description', '')|indent }}
 {%- if details['type'] is defined %}
@@ -94,6 +94,7 @@ Most node types will write a snapshot of the `resource` information from GCP whe
 {%- endif %}
 
 {%- endfor %}
+{%- endif %}
 
 
 {% if content['example'] %}
@@ -133,6 +134,15 @@ This behavior is common to all resource types which support `use_external_resour
 # Account Information
 
 The plugin needs access to your GCP auth credentials (via the `gcp_config` parameter) in order to operate (but see below about use within a manager).
+
+
+# GCP-based managers and Networks
+
+Instances in GCP are not able to communicate internally with instances in a different network.
+This means that if you want to run Cloudify agents on your nodes they must be in the same network as the manager.
+
+Additionally, a given network must choose either auto-subnets or manual subnets operation when created.
+For maximum flexibility, `auto_subnets: false` is recommended, though this requires that subnets are created for any region you wish to place Instances in.
 
 
 # Tips
